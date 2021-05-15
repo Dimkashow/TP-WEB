@@ -1,0 +1,20 @@
+<div class="contatiner border rounded mb-4">
+    <div class="row">
+        <div class="col-1">
+            <img src="{{ MEDIA_URL }}{{ question.photo }}" class="rounded border mr-3 ml-1 mt-1 maxwidth50">
+            <input class="mr-3 ml-1 mt-1 pl-2 likescountform" id="question{{ question.id }}" min="{{ question.likes_count }}" max= "{{ question.likes_count }}" value="{{ question.likes_count }}" type="number">
+            <button type="button" class="btn btn-primary btn-sm ml-1 mt-1 mb-1 like-button" onclick="create_like({{ question.id }}, 'question')">like</button>
+        </div>
+        <div class="col mb-1">
+            <a class="refs" href="{% url 'question' qid=question.id %}">{{ question.title }}</a>
+            <p class="mt-1">{{ question.text }}</p>
+            <div>
+                <a class="refs mr-5" href="{% url 'question' qid=question.id %}">answer({{ question.answers_count }})</a>
+                Tags:
+                {% for tag_ in question.tags.all %}
+                    <a href="{% url 'tag' tag=tag_ %}" class="refs mr-1">{{ tag_ }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

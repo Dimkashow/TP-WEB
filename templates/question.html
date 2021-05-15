@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load bootstrap4%}
+
+{% block content %}
+    <div class="contatiner mb-4 border-bottom">
+        <div class="row mb-1">
+            <div class="col-1 col-md-2">
+                <img src="{{ MEDIA_URL }}{{ question.photo }}" class="rounded border mr-3 ml-1 mt-1 mb-3 maxwidth">
+                <input class="mr-3 ml-1 mt-1 pl-2 likescountform" id="question{{ question.id }}" min="{{ question.likes_count }}" max= "{{ question.likes_count }}" value="{{ question.likes_count }}" type="number">
+                <button type="button" class="btn btn-primary btn-sm ml-1 mt-1 like-button" onclick="create_like({{ question.id }}, 'question')">like</button>
+            </div>
+            <div class="col mb-1">
+                <h3 class="pb-3 mb-1">
+                    {{ question.title }}
+                </h3>
+                <p class="mt-1">
+                    {{ question.text }}
+                </p>
+                <div>
+                    Tags:
+                    {% for tag_ in question.tags.all %}
+                        <a href="{% url 'tag' tag=tag_ %}" class="refs mr-1">{{ tag_ }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="answers">
+        {% for answer in answers %}
+            {% include 'inc/answer.html' %}
+        {% endfor %}
+    </div>
+    {% if not answers %}
+        <h4 class="mb-4 text-center ">No answers here :(</h4>
+    {% endif %}
+    {% if user.is_authenticated %}
+        <hr>
+        <form class="mb-4" method="POST">
+            {% csrf_token %}
+            {% bootstrap_field form.field show_label=False size='small' placeholder='Enter your answer here' %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">Answer!</button>
+            {% endbuttons %}
+        </form>
+    {% endif %}
+     <script type="text/javascript">
+            const centrifuge = new Centrifuge("ws://localhost:8000/connection/websocket");
+            centrifuge.setToken("{{ TOKEN }}");
+
+            centrifuge.on('connect', function(ctx) {
+                console.log("connected", ctx);
+            });
+
+            centrifuge.on('disconnect', function(ctx) {
+                console.log("disconnected", ctx);
+            });
+
+            centrifuge.subscribe('question{{ question.id }}', function(ctx) {
+                console.log("channel", ctx);
+                var content = document.getElementById("content");
+                console.log(ctx['data']['answer']);
+  
+                var div = document.createElement('div');
+                div.innerHTML = ctx['data']['answer'].trim();
+                document.querySelector('.answers').append(div.firstChild);
+            });
+
+            centrifuge.connect();
+        </script>
+    {% comment %} {% include 'inc/pagination.html' %} {% endcomment %}
+{% endblock content %}
+
+
+
+

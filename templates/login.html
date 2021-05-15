@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h3 class="pb-3 mb-4 border-bottom">
+    Log In
+    </h3>
+    <form action="{% url 'login' %}?next={{ previous }}" class="mb-4" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">Login</button>
+        {% endbuttons %}
+    </form>
+    <a class="refs" href="{% url 'singup' %}">Create new account</a>
+{% endblock content %}
+

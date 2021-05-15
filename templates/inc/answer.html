@@ -1,0 +1,24 @@
+<div class="contatiner border rounded mb-4">
+    <div class="row">
+        <div class="col-1">
+            <img src="{{ MEDIA_URL }}{{ answer.photo }}" class="rounded border mr-3 ml-1 mt-1 maxwidth50">
+            <input class="mr-3 ml-1 mt-1 pl-2 likescountform" id="answer{{ answer.id }}" min="{{ answer.likes_count }}" max="{{ answer.likes_count }}" value="{{ answer.likes_count }}" type="number">
+            {% if user.is_authenticated %}
+            <button type="button" class="btn btn-primary btn-sm ml-1 mt-1 mb-1 like-button" onclick="create_like({{ answer.id }}, 'answer')">like</button>
+            {% endif %}
+        </div>
+        <div class="col mb-1">
+            <p class="mt-1">
+                {{ answer.text }}
+            </p>
+            {% if answer.is_correct %}
+            <label>Correct!</label>
+            {% else %}
+            <label id="correct{{ answer.id }}"></label>
+            {% endif %}
+            {% if is_owner and not answer.is_correct %}
+            <button class="btn btn-primary btn-sm ml-1 mt-1 mb-1" id="button{{ answer.id}}" onclick="mark_as_correct({{ answer.id }})">Mark as correct</button>
+            {% endif %}
+        </div>
+    </div>
+</div>

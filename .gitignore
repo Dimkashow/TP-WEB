@@ -1,0 +1,7 @@
+*.pyc
+/static/
+/uploads/
+/venv/
+db.sqlite3
+.vscode/
+app/migrations/*

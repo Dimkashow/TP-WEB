@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h3 class="pb-3 mb-4 border-bottom">
+    New Question
+    </h3>
+    <form method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">Ask!</button>
+        {% endbuttons %}
+    </form>
+{% endblock content %}

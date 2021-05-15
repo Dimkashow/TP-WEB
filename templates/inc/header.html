@@ -1,0 +1,60 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light pb-2 mb-4">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a class="navbar-brand col-6" href="{% url 'index' %}">QuestionLess</a>
+            <div class="dropdown mr-4">
+                <input id="searchForm" class="form-control mr-sm-2" type="text" placeholder="Search" data-toggle="dropdown">
+                <div class="dropdown-menu" id="myDropdown"></div>
+            </div>
+            <script type="text/javascript">
+                $('#searchForm').keyup(function() {
+                    var csrftoken = getCookie('csrftoken');
+
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        }
+                    });
+
+                    if($(this).val().length > 3) {
+                        $.ajax({
+                            url: '/ajax/search',
+                            type: 'post',
+                            data: {'search': $(this).val()},
+                            success: function(data) {
+                                $("#myDropdown").html('');
+                                for(i in data['questions']){
+                                    $('#myDropdown').append(`<a class="dropdown-item" href="/question/${data['questions'][i][1]}">${data['questions'][i][0]}</a>`);
+                                }
+                            },
+                            failure: function(data) {
+                                alert('error')
+                            }
+                        })
+                    }
+                });
+            </script>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="mr-2">
+            {{ user.username }}
+        </div>
+        <div>
+            <button onclick="location.href = '{% url 'ask' %}';" class="btn btn-outline-success my-2">Ask</button>
+            <button onclick="location.href = '{% url 'settings' %}';" class="btn btn-outline-success my-2">Settings</button>
+            <button onclick="location.href = '{% url 'logout' %}';" class="btn btn-outline-success my-2">Log out</button>
+        </div>
+        {% else %}
+        <div>
+            <button onclick="location.href = '{% url 'ask' %}';" class="btn btn-outline-success my-2">Ask</button>
+            <button onclick="location.href = '{% url 'login' %}';" class="btn btn-outline-success my-2">Log in</button>
+            <button onclick="location.href = '{% url 'singup' %}';" class="btn btn-outline-success my-2">Register</button>
+        </div>
+        {% endif %}
+    </nav>
+</header>
